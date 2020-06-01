@@ -1,3 +1,6 @@
 Notes after first attempt:
 Implemented Dragula but couldn't change the cards to other swimlanes.
 I will have to come back and fix it.
+
+Notes after second attempt:
+Followed the model solution
