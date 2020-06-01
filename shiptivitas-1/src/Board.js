@@ -52,27 +52,47 @@ export default class Board extends React.Component {
   }
   renderSwimlane(name, clients, ref) {
     return (
-      <Swimlane name={name} clients={clients} dragulaRef={ref}/>
+      <Swimlane name={name} clients={clients} dragulaRef={this.ref}/>
     );
   }
+  ref = (containers) => {
+    let options = {
+    };
+    console.log(containers)
+    Dragula([containers], options);
+  };
 
   render() {
     return (
-      <div className="Board">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-md-4">
-              {this.renderSwimlane('Backlog', this.state.clients.backlog, this.swimlanes.backlog)}
+        <div className="Board">
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-4">
+                        {this.renderSwimlane(
+                            "Backlog",
+                            this.state.clients.backlog,
+                            this.swimlanes.backlog
+                        )}
+                    </div>
+                    <div className="col-md-4">
+                        
+                        {this.renderSwimlane(
+                            "In Progress",
+                            this.state.clients.inProgress,
+                            this.swimlanes.inProgress
+                        )}
+                    </div>
+                    <div className="col-md-4">
+                        
+                        {this.renderSwimlane(
+                            "Complete",
+                            this.state.clients.complete,
+                            this.swimlanes.complete
+                        )}
+                    </div>
+                </div>
             </div>
-            <div className="col-md-4">
-              {this.renderSwimlane('In Progress', this.state.clients.inProgress, this.swimlanes.inProgress)}
-            </div>
-            <div className="col-md-4">
-              {this.renderSwimlane('Complete', this.state.clients.complete, this.swimlanes.complete)}
-            </div>
-          </div>
         </div>
-      </div>
     );
   }
 }
