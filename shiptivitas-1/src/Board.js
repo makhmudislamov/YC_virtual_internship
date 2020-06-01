@@ -52,15 +52,10 @@ export default class Board extends React.Component {
   }
   renderSwimlane(name, clients, ref) {
     return (
-      <Swimlane name={name} clients={clients} dragulaRef={this.ref}/>
+      <Swimlane name={name} clients={clients} dragulaRef={ref}/>
     );
   }
-  ref = (containers) => {
-    let options = {
-    };
-    console.log(containers)
-    Dragula([containers], options);
-  };
+
 
   render() {
     return (
@@ -95,4 +90,65 @@ export default class Board extends React.Component {
         </div>
     );
   }
+
+  componentDidMount() {
+    this.drake = Dragula([
+      this.swimlanes.backlog.current,
+      this.swimlanes.inProgress.current,
+      this.swimlanes.complete.current,
+    ]);
+    this.drake.on('drop', (el, target, source, siblings) => this.updateClient(el, target, source, siblings));
+  }
+
+  componentWillUnmount() {
+    this.drake.remove();
+  }
+
+  // Changing the status of the card on the client when it's moved
+  updateClient(el, target, _, sibling) {
+    this.drake.cancel(true);
+    // finding to which swimlane the card was moved to
+    let targetSwimlane = 'backlog';
+    if (target === this.swimlanes.inProgress.current) {
+      targetSwimlane = 'in-progress';
+    } else if (target === this.swimlanes.complete.current) {
+      targetSwimlane = 'complete';
+    }
+
+    // populating clients arr
+    const clientsList = [
+      ...this.state.clients.backlog,
+      ...this.state.clients.inProgress,
+      ...this.state.clients.complete,
+    ];
+    const clientThatMoved = clientsList.find(client => client.id === el.dataset.id);
+    const clientThatMovedClone = {
+      ...clientThatMoved,
+      status: targetSwimlane,
+    }
+
+    // Removing moved client from the client list
+    const updatedClients = clientsList.filter(client => client.id !== clientThatMovedClone.id);
+
+    // place ClientThatMoved right before the sibling client, keeping the order
+    const index = updatedClients.findIndex(client => sibling && client.id === sibling.dataset.id);
+    updatedClients.splice(index === -1 ? updatedClients.length : index, 0, clientThatMovedClone);
+
+    // updating React state
+    this.setState({
+        clients: {
+            backlog: updatedClients.filter(
+                (client) => !client.status || client.status === "backlog"
+            ),
+            inProgress: updatedClients.filter(
+                (client) => client.status && client.status === "in-progress"
+            ),
+            complete: updatedClients.filter(
+                (client) => client.status && client.status === "complete"
+            ),
+        },
+    });
+
+  }
+
 }
