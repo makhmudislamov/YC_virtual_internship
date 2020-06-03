@@ -1,0 +1,3 @@
+First attempt:
+Learned SQLite and wrote pseudocode
+had issues with actual implementations, will have to look at the model work
