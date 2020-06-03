@@ -124,8 +124,18 @@ app.put('/api/v1/clients/:id', (req, res) => {
   let { status, priority } = req.body;
   let clients = db.prepare('select * from clients').all();
   const client = clients.find(client => client.id === id);
+  console.log("THIS CLIENT", client.status, client.priority)
 
   /* ---------- Update code below ----------*/
+  // INTER-SWIMLANE CHANGE
+  // insert it to new row (status) with current prirority based on location
+  // take out the client from its current row (status), adjus the priorites of the rest cards
+
+  // POSITION CHANGE IN THE SAME SWIMLANE
+  // just change the priority
+
+
+
 
 
 
